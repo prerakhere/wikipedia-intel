@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.wikipedia.intel'
+version = '0.1.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Kafka
+    implementation 'org.apache.kafka:kafka-clients:3.7.0'
+    implementation 'org.apache.kafka:kafka-streams:3.7.0'
+
+    // JSON parsing
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+
+    // Logging
+    implementation 'org.slf4j:slf4j-api:2.0.12'
+    implementation 'ch.qos.logback:logback-classic:1.5.3'
+
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+application {
+    mainClass = 'com.wikipedia.intel.App'
+}
+
+tasks.register('verifyKafka', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.wikipedia.intel.KafkaVerify'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
