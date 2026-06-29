@@ -129,14 +129,14 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
     - Log connection at INFO, parse failures at WARN
     - _Requirements: 1.1, 1.2, 1.3, 10.1_
 
-  - [ ] 3.10 Write unit tests for SseIngestApp integration
+  - [x] 3.10 Write unit tests for SseIngestApp integration
     - Create `src/test/java/com/wikipedia/intel/sse/SseIngestAppTest.java`
     - Test app wires SseClient → EventPublisher correctly
     - Test reconnection loop invokes SseReconnector on disconnect
     - Test graceful shutdown on interrupt
     - _Requirements: 4.4, 4.5, 9.1, 10.4_
 
-  - [ ] 3.11 Implement SseIngestApp entry point
+  - [x] 3.11 Implement SseIngestApp entry point
     - Create `src/main/java/com/wikipedia/intel/sse/SseIngestApp.java`
     - Wire together: PipelineConfig, SseClient, SseReconnector, EventPublisher
     - Implement reconnection loop with backoff logging at INFO level
