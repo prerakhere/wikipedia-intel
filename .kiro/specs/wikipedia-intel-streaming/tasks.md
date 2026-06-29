@@ -59,18 +59,18 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
     - Assert event passes filter iff namespace == 0
     - **Validates: Requirements 2.1, 2.2, 2.3**
 
-- [ ] 2. Checkpoint - Ensure all tests pass
+- [x] 2. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 3. Phase 1: SSE Consumer and Kafka Producer
-  - [ ] 3.1 Write unit tests for SseReconnector backoff computation
+  - [x] 3.1 Write unit tests for SseReconnector backoff computation
     - Create `src/test/java/com/wikipedia/intel/sse/SseReconnectorTest.java`
     - Test initial delay is 1000ms at attempt 0
     - Test doubling: attempt 1 → 2000ms, attempt 2 → 4000ms, etc.
     - Test cap at 30000ms for high attempt numbers
     - _Requirements: 4.1, 4.2, 4.3_
 
-  - [ ] 3.2 Implement SseReconnector
+  - [x] 3.2 Implement SseReconnector
     - Create `src/main/java/com/wikipedia/intel/sse/SseReconnector.java`
     - Implement `computeDelay(int attempt)` as `min(initialDelayMs * 2^attempt, maxDelayMs)`
     - Implement `initialDelay()` accessor
@@ -91,7 +91,7 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
     - After any sequence of failures, verify attempt 0 always yields initialDelay
     - **Validates: Requirements 4.4**
 
-  - [ ] 3.5 Write unit tests for EventPublisher
+  - [x] 3.5 Write unit tests for EventPublisher
     - Create `src/test/java/com/wikipedia/intel/sse/EventPublisherTest.java`
     - Test namespace=0 events are published (mock KafkaProducer)
     - Test namespace≠0 events are discarded
@@ -99,7 +99,7 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
     - Test failed send increments failedSendCount
     - _Requirements: 2.2, 2.3, 3.1, 3.2, 3.4_
 
-  - [ ] 3.6 Implement EventPublisher
+  - [x] 3.6 Implement EventPublisher
     - Create `src/main/java/com/wikipedia/intel/sse/EventPublisher.java`
     - Inject KafkaProducer<String, String> and ObjectMapper
     - Implement `publish(WikipediaEvent)`: check namespace, serialize, produce with title as key
