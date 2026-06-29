@@ -32,7 +32,10 @@ public class SseClient {
     public SseClient(String url, ObjectMapper mapper) {
         this.url = url;
         this.mapper = mapper;
-        this.httpClient = HttpClient.newHttpClient();
+        this.httpClient = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1)
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .build();
         this.running = true;
     }
 
@@ -48,12 +51,19 @@ public class SseClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Accept", "text/event-stream")
+                .header("User-Agent", "wikipedia-intel/0.1.0 (https://github.com/prerakhere/wikipedia-intel)")
                 .GET()
                 .build();
 
         try {
             HttpResponse<InputStream> response = httpClient.send(request,
                     HttpResponse.BodyHandlers.ofInputStream());
+
+            if (response.statusCode() != 200) {
+                log.warn("SSE endpoint returned HTTP {}", response.statusCode());
+                return;
+            }
+
             processStream(response.body(), onEvent);
         } catch (IOException | InterruptedException e) {
             if (running) {
