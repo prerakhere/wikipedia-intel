@@ -44,6 +44,13 @@ tasks.register('verifyKafka', JavaExec) {
     mainClass = 'com.wikipedia.intel.KafkaVerify'
 }
 
+tasks.register('runPhase1', JavaExec) {
+    group = 'application'
+    description = 'Run the SSE ingest consumer (Phase 1)'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.wikipedia.intel.sse.SseIngestApp'
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }

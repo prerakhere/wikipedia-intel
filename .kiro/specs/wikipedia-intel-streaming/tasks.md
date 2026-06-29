@@ -62,7 +62,7 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
 - [x] 2. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Phase 1: SSE Consumer and Kafka Producer
+- [x] 3. Phase 1: SSE Consumer and Kafka Producer
   - [x] 3.1 Write unit tests for SseReconnector backoff computation
     - Create `src/test/java/com/wikipedia/intel/sse/SseReconnectorTest.java`
     - Test initial delay is 1000ms at attempt 0
@@ -143,12 +143,12 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
     - Add shutdown hook for graceful close
     - _Requirements: 1.1, 4.4, 4.5, 9.1, 10.1, 10.4_
 
-  - [ ] 3.12 Add Gradle task for running Phase 1
+  - [x] 3.12 Add Gradle task for running Phase 1
     - Add `tasks.register('runPhase1', JavaExec)` with mainClass = SseIngestApp
     - Verify `./gradlew runPhase1` starts the SSE consumer standalone
     - _Requirements: 9.1_
 
-- [ ] 4. Checkpoint - Ensure all Phase 1 tests pass
+- [x] 4. Checkpoint - Ensure all Phase 1 tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Phase 2: Kafka Streams Signal Detection
