@@ -114,14 +114,14 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
     - Assert ProducerRecord key == event.title() for all
     - **Validates: Requirements 3.2**
 
-  - [ ] 3.8 Write unit tests for SseClient
+  - [x] 3.8 Write unit tests for SseClient
     - Create `src/test/java/com/wikipedia/intel/sse/SseClientTest.java`
     - Test SSE line parsing: extract `data:` payload from SSE format
     - Test malformed JSON lines are skipped with WARN log
     - Test connection callback is invoked with parsed WikipediaEvent
     - _Requirements: 1.1, 1.2, 10.1_
 
-  - [ ] 3.9 Implement SseClient
+  - [x] 3.9 Implement SseClient
     - Create `src/main/java/com/wikipedia/intel/sse/SseClient.java`
     - Use `java.net.http.HttpClient` to connect to SSE endpoint
     - Parse SSE format (extract `data:` lines), deserialize JSON via Jackson
