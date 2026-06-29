@@ -6,39 +6,39 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
 
 ## Tasks
 
-- [ ] 1. Shared Foundation: Data Models and Configuration
-  - [ ] 1.1 Add jqwik dependency to build.gradle for property-based testing
+- [x] 1. Shared Foundation: Data Models and Configuration
+  - [x] 1.1 Add jqwik dependency to build.gradle for property-based testing
     - Add `testImplementation 'net.jqwik:jqwik:1.8.4'` to dependencies block
     - Add `testImplementation 'org.apache.kafka:kafka-streams-test-utils:3.7.0'` for TopologyTestDriver
     - _Requirements: 9.1_
 
-  - [ ] 1.2 Create PipelineConfig record with static load() method
+  - [x] 1.2 Create PipelineConfig record with static load() method
     - Create `src/main/java/com/wikipedia/intel/config/PipelineConfig.java`
     - Implement system property > environment variable > default loading priority
     - Include all config fields: Kafka, SSE, trending, bot anomaly, DynamoDB, dashboard port
     - _Requirements: 5.2, 5.3, 6.1, 6.2, 4.1, 4.3, 8.1_
 
-  - [ ] 1.3 Write unit tests for WikipediaEvent model
+  - [x] 1.3 Write unit tests for WikipediaEvent model
     - Create `src/test/java/com/wikipedia/intel/model/WikipediaEventTest.java`
     - Test Jackson deserialization from real SSE JSON sample
     - Test `isMainNamespace()` returns true for namespace=0, false otherwise
     - Test `@JsonIgnoreProperties(ignoreUnknown = true)` handles extra fields
     - _Requirements: 1.2, 1.3, 2.1_
 
-  - [ ] 1.4 Create WikipediaEvent record with Jackson annotations
+  - [x] 1.4 Create WikipediaEvent record with Jackson annotations
     - Create `src/main/java/com/wikipedia/intel/model/WikipediaEvent.java`
     - Implement as Java record with nested Revision and Length records
     - Add `isMainNamespace()` method
     - Make tests from 1.3 pass
     - _Requirements: 1.2, 1.3, 2.1_
 
-  - [ ] 1.5 Write unit tests for Signal types (TrendingSignal, BotAnomalySignal)
+  - [x] 1.5 Write unit tests for Signal types (TrendingSignal, BotAnomalySignal)
     - Create `src/test/java/com/wikipedia/intel/model/SignalTest.java`
     - Test JSON serialization/deserialization with `@JsonTypeInfo` polymorphism
     - Test signal type discriminator field in serialized JSON
     - _Requirements: 5.4, 6.3_
 
-  - [ ] 1.6 Create Signal sealed interface, TrendingSignal, and BotAnomalySignal records
+  - [x] 1.6 Create Signal sealed interface, TrendingSignal, and BotAnomalySignal records
     - Create `src/main/java/com/wikipedia/intel/model/Signal.java`
     - Create `src/main/java/com/wikipedia/intel/model/TrendingSignal.java`
     - Create `src/main/java/com/wikipedia/intel/model/BotAnomalySignal.java`
