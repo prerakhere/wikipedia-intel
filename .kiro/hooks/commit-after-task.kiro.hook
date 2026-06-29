@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Commit After TDD Round",
+  "description": "After a spec task completes, reminds the agent to commit if a TDD cycle just finished (test + implementation both done) and pause to report progress to the user.",
+  "version": "1",
+  "when": {
+    "type": "postTaskExecution"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A task just completed. Check if a TDD round just finished (both the test task AND its corresponding implementation task are now complete). If yes: 1) Run ./gradlew test to verify all tests pass, 2) Stage and commit the changes with a descriptive message, 3) STOP execution and report progress to the user (what was committed, what's next). Do NOT continue to the next task — wait for the user to say 'continue'. If the TDD round is NOT complete yet (e.g., only the test was written, implementation still pending), proceed with the implementation task."
+  }
+}

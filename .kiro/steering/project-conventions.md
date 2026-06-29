@@ -40,6 +40,7 @@
 - Public repo — keep it professional
 - Commit messages: concise, imperative mood
 - Don't commit secrets, CONTEXT.md, or LEARNING.md (they're gitignored)
+- **Atomic TDD commits**: After each TDD round (test + implementation passes), commit immediately. Do NOT continue to the next task without committing first. Pause and report progress to the user after each commit.
 
 ## Build Commands
 
