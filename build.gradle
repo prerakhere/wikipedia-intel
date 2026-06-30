@@ -61,6 +61,13 @@ tasks.register('runPhase2', JavaExec) {
     mainClass = 'com.wikipedia.intel.streams.SignalDetectorApp'
 }
 
+tasks.register('runPhase3', JavaExec) {
+    group = 'application'
+    description = 'Run the web dashboard and persistence layer (Phase 3)'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.wikipedia.intel.web.DashboardApp'
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
