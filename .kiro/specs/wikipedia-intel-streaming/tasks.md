@@ -152,7 +152,7 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Phase 2: Kafka Streams Signal Detection
-  - [ ] 5.1 Write unit tests for TrendingDetector logic
+  - [x] 5.1 Write unit tests for TrendingDetector logic
     - Create `src/test/java/com/wikipedia/intel/streams/TrendingDetectorTest.java`
     - Use TopologyTestDriver to pipe events and verify signal emission
     - Test: 4 edits to same article in window → no signal
@@ -160,7 +160,7 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
     - Test: signal contains correct title, editCount, window timestamps
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-  - [ ] 5.2 Implement TrendingDetector
+  - [x] 5.2 Implement TrendingDetector
     - Create `src/main/java/com/wikipedia/intel/streams/TrendingDetector.java`
     - Implement windowed count aggregation grouped by title
     - Filter on configurable threshold, map to TrendingSignal
@@ -175,7 +175,7 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
     - Assert signal emitted iff count > threshold, with correct fields
     - **Validates: Requirements 5.2, 5.3, 5.4**
 
-  - [ ] 5.4 Write unit tests for BotAnomalyDetector logic
+  - [x] 5.4 Write unit tests for BotAnomalyDetector logic
     - Create `src/test/java/com/wikipedia/intel/streams/BotAnomalyDetectorTest.java`
     - Use TopologyTestDriver to pipe events and verify signal emission
     - Test: 8 bot edits + 2 human edits (total 10, ratio 0.8) → no signal (not > 0.8)
@@ -184,7 +184,7 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
     - Test: signal contains correct botEditCount, totalEditCount, ratio, window timestamps
     - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
-  - [ ] 5.5 Implement BotAnomalyDetector
+  - [x] 5.5 Implement BotAnomalyDetector
     - Create `src/main/java/com/wikipedia/intel/streams/BotAnomalyDetector.java`
     - Implement windowed aggregation with constant key, tracking total and bot counts
     - Filter on ratio threshold AND minimum volume, map to BotAnomalySignal
