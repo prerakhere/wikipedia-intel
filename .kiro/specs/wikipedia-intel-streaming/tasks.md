@@ -151,7 +151,7 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
 - [x] 4. Checkpoint - Ensure all Phase 1 tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Phase 2: Kafka Streams Signal Detection
+- [x] 5. Phase 2: Kafka Streams Signal Detection
   - [x] 5.1 Write unit tests for TrendingDetector logic
     - Create `src/test/java/com/wikipedia/intel/streams/TrendingDetectorTest.java`
     - Use TopologyTestDriver to pipe events and verify signal emission
@@ -213,18 +213,18 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
     - Make tests from 5.7 pass
     - _Requirements: 5.1, 6.1_
 
-  - [ ] 5.9 Implement SignalDetectorApp entry point
+  - [x] 5.9 Implement SignalDetectorApp entry point
     - Create `src/main/java/com/wikipedia/intel/streams/SignalDetectorApp.java`
     - Wire PipelineConfig → SignalTopology → KafkaStreams
     - Add shutdown hook, log signal emissions at INFO level
     - _Requirements: 9.2, 10.3, 10.4_
 
-  - [ ] 5.10 Add Gradle task for running Phase 2
+  - [x] 5.10 Add Gradle task for running Phase 2
     - Add `tasks.register('runPhase2', JavaExec)` with mainClass = SignalDetectorApp
     - Verify `./gradlew runPhase2` starts the signal detector standalone
     - _Requirements: 9.2_
 
-- [ ] 6. Checkpoint - Ensure all Phase 2 tests pass
+- [x] 6. Checkpoint - Ensure all Phase 2 tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Phase 3: DynamoDB Persistence and Web Dashboard

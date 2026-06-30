@@ -51,6 +51,13 @@ tasks.register('runPhase1', JavaExec) {
     mainClass = 'com.wikipedia.intel.sse.SseIngestApp'
 }
 
+tasks.register('runPhase2', JavaExec) {
+    group = 'application'
+    description = 'Run the Kafka Streams signal detector (Phase 2)'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.wikipedia.intel.streams.SignalDetectorApp'
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
