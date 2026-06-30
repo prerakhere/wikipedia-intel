@@ -199,14 +199,14 @@ Implement the Wikipedia real-time streaming pipeline in three independently runn
     - Assert signal emitted iff ratio > threshold AND total >= minimumVolume
     - **Validates: Requirements 6.1, 6.2, 6.3, 6.4**
 
-  - [ ] 5.7 Write integration test for SignalTopology (full topology)
+  - [x] 5.7 Write integration test for SignalTopology (full topology)
     - Create `src/test/java/com/wikipedia/intel/streams/SignalTopologyTest.java`
     - Use TopologyTestDriver with both branches wired together
     - Test end-to-end: events in → correct signals out on `wikipedia.signals`
     - Verify both trending and bot anomaly branches coexist without interference
     - _Requirements: 5.1, 6.1_
 
-  - [ ] 5.8 Implement SignalTopology
+  - [x] 5.8 Implement SignalTopology
     - Create `src/main/java/com/wikipedia/intel/streams/SignalTopology.java`
     - Wire TrendingDetector and BotAnomalyDetector into a single Kafka Streams Topology
     - Configure custom JSON Serdes for WikipediaEvent and Signal
