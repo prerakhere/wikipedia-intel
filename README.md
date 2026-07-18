@@ -144,6 +144,11 @@ src/main/java/com/wikipedia/intel/
 └── ai/              Phase 4 — Bedrock client, batching, enriched dashboard
 ```
 
+## Development Approach
+
+- **Phases 1–3** (streaming pipeline) — built using [Kiro IDE's](https://kiro.dev) spec-driven development: requirements → design doc → task breakdown → TDD implementation. See `.kiro/specs/` for the full spec artifacts.
+- **Phase 4** (AI enrichment) — vibe-coded iteratively in the terminal, with rapid prompt tuning against the live stream.
+
 ## Motivation
 
 This project was built to learn Kafka Streams, windowed aggregations, and real-time data pipelines on a genuine high-volume live feed. The domain (Wikipedia edit trends) is incidental — the architecture maps directly to fraud detection, observability, IoT, ad-tech, or any event-driven system.
