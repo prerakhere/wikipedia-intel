@@ -28,7 +28,10 @@ public record PipelineConfig(
     int botMinimumVolume,
 
     // Web Dashboard
-    int dashboardPort
+    int dashboardPort,
+
+    // Bedrock
+    String bedrockRegion
 ) {
 
     /**
@@ -49,7 +52,8 @@ public record PipelineConfig(
             Long.parseLong(resolve("pipeline.bot.window.minutes", "PIPELINE_BOT_WINDOW_MINUTES", "5")),
             Double.parseDouble(resolve("pipeline.bot.ratio.threshold", "PIPELINE_BOT_RATIO_THRESHOLD", "0.3")),
             Integer.parseInt(resolve("pipeline.bot.minimum.volume", "PIPELINE_BOT_MINIMUM_VOLUME", "5")),
-            Integer.parseInt(resolve("pipeline.dashboard.port", "PIPELINE_DASHBOARD_PORT", "8080"))
+            Integer.parseInt(resolve("pipeline.dashboard.port", "PIPELINE_DASHBOARD_PORT", "8080")),
+            resolve("pipeline.bedrock.region", "PIPELINE_BEDROCK_REGION", "ap-south-1")
         );
     }
 

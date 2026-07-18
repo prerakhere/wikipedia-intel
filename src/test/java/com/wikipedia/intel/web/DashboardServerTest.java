@@ -1,6 +1,7 @@
 package com.wikipedia.intel.web;
 
 import com.wikipedia.intel.model.TrendingSignal;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +34,7 @@ class DashboardServerTest {
         int port = findAvailablePort();
         long now = System.currentTimeMillis();
         SignalHandler handler = new SignalHandler(new SignalFormatter());
-        handler.addSignal(new TrendingSignal("TestArticle", 5, now - 300000, now));
+        handler.addSignal(new TrendingSignal("TestArticle", 5, List.of(), now - 300000, now));
 
         server = new DashboardServer(port, handler);
         server.start();

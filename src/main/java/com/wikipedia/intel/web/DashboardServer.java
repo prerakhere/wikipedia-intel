@@ -1,5 +1,6 @@
 package com.wikipedia.intel.web;
 
+import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +26,11 @@ public class DashboardServer {
      * @param handler the request handler for serving dashboard content
      * @throws IOException if the port cannot be bound
      */
-    public DashboardServer(int port, SignalHandler handler) throws IOException {
+    public DashboardServer(int port, HttpHandler handler) throws IOException {
         this.port = port;
         try {
             this.server = HttpServer.create(new InetSocketAddress(port), 0);
             server.createContext("/", handler);
-            server.createContext("/api/signals", handler);
         } catch (IOException e) {
             logger.error("Failed to bind dashboard server to port {}", port, e);
             throw e;

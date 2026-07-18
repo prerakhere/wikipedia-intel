@@ -22,6 +22,7 @@ class PipelineConfigTest {
         assertEquals(0.3, config.botRatioThreshold(), 0.001);
         assertEquals(5, config.botMinimumVolume());
         assertEquals(8080, config.dashboardPort());
+        assertEquals("ap-south-1", config.bedrockRegion());
     }
 
     @Test

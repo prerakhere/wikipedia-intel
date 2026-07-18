@@ -38,9 +38,9 @@ class DashboardIntegrationTest {
 
         long now = System.currentTimeMillis();
         // Add sample signals with recent timestamps
-        handler.addSignal(new TrendingSignal("Java_(programming_language)", 12, now - 300000, now));
+        handler.addSignal(new TrendingSignal("Java_(programming_language)", 12, List.of(), now - 300000, now));
         handler.addSignal(new BotAnomalySignal(18, 20, 0.9, now - 300000, now));
-        handler.addSignal(new TrendingSignal("Kafka_(software)", 7, now - 300000, now));
+        handler.addSignal(new TrendingSignal("Kafka_(software)", 7, List.of(), now - 300000, now));
 
         server = new DashboardServer(port, handler);
         server.start();
@@ -124,7 +124,7 @@ class DashboardIntegrationTest {
     void getApiSignals_afterAddingMoreSignals_reflectsUpdates() throws Exception {
         // Add another signal after server is running
         long now = System.currentTimeMillis();
-        handler.addSignal(new TrendingSignal("New_Article", 15, now - 300000, now));
+        handler.addSignal(new TrendingSignal("New_Article", 15, List.of(), now - 300000, now));
 
         HttpResponse<String> response = client.send(
                 HttpRequest.newBuilder()

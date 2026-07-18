@@ -20,6 +20,9 @@ dependencies {
     implementation 'org.apache.kafka:kafka-clients:3.7.0'
     implementation 'org.apache.kafka:kafka-streams:3.7.0'
 
+    // AWS SDK (Bedrock for AI enrichment)
+    implementation 'software.amazon.awssdk:bedrockruntime:2.28.0'
+
     // JSON parsing
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
 
@@ -60,9 +63,16 @@ tasks.register('runPhase2', JavaExec) {
 
 tasks.register('runPhase3', JavaExec) {
     group = 'application'
-    description = 'Run the web dashboard and persistence layer (Phase 3)'
+    description = 'Run the web dashboard (Phase 3)'
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'com.wikipedia.intel.web.DashboardApp'
+}
+
+tasks.register('runPhase4', JavaExec) {
+    group = 'application'
+    description = 'Run the AI enrichment layer via Bedrock (Phase 4)'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.wikipedia.intel.ai.AiEnrichmentApp'
 }
 
 tasks.named('test') {
