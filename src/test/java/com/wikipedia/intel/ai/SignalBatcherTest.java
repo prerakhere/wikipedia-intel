@@ -98,6 +98,6 @@ class SignalBatcherTest {
     }
 
     private TrendingSignal signal(String title) {
-        return new TrendingSignal(title, 5, List.of(), System.currentTimeMillis() - 300000, System.currentTimeMillis());
+        return new TrendingSignal(title, 5, List.of(), 0, System.currentTimeMillis() - 300000, System.currentTimeMillis());
     }
 }

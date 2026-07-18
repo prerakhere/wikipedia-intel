@@ -37,7 +37,7 @@ class SignalHandlerTest {
     @Test
     void addSignal_storesSignalInBuffer() {
         long now = System.currentTimeMillis();
-        TrendingSignal signal = new TrendingSignal("Java", 10, List.of(), now - 300000, now);
+        TrendingSignal signal = new TrendingSignal("Java", 10, List.of(), 0, now - 300000, now);
         handler.addSignal(signal);
 
         List<Signal> signals = handler.recentSignals();
@@ -50,7 +50,7 @@ class SignalHandlerTest {
         long now = System.currentTimeMillis();
         // Add 55 signals — oldest 5 should be evicted
         for (int i = 0; i < 55; i++) {
-            handler.addSignal(new TrendingSignal("Article-" + i, i + 1, List.of(), now - 300000, now));
+            handler.addSignal(new TrendingSignal("Article-" + i, i + 1, List.of(), 0, now - 300000, now));
         }
 
         List<Signal> signals = handler.recentSignals();
@@ -60,9 +60,9 @@ class SignalHandlerTest {
     @Test
     void recentSignals_returnsSortedByEditCountDescending() {
         long now = System.currentTimeMillis();
-        handler.addSignal(new TrendingSignal("Low", 3, List.of(), now - 300000, now));
-        handler.addSignal(new TrendingSignal("High", 15, List.of(), now - 300000, now));
-        handler.addSignal(new TrendingSignal("Medium", 8, List.of(), now - 300000, now));
+        handler.addSignal(new TrendingSignal("Low", 3, List.of(), 0, now - 300000, now));
+        handler.addSignal(new TrendingSignal("High", 15, List.of(), 0, now - 300000, now));
+        handler.addSignal(new TrendingSignal("Medium", 8, List.of(), 0, now - 300000, now));
 
         List<Signal> signals = handler.recentSignals();
         assertEquals(3, signals.size());
@@ -75,7 +75,7 @@ class SignalHandlerTest {
     void recentSignals_botAnomalySortedByTotalEditCount() {
         long now = System.currentTimeMillis();
         handler.addSignal(new BotAnomalySignal(5, 6, 0.83, now - 300000, now));
-        handler.addSignal(new TrendingSignal("Big", 20, List.of(), now - 300000, now));
+        handler.addSignal(new TrendingSignal("Big", 20, List.of(), 0, now - 300000, now));
         handler.addSignal(new BotAnomalySignal(8, 10, 0.8, now - 300000, now));
 
         List<Signal> signals = handler.recentSignals();
@@ -93,9 +93,9 @@ class SignalHandlerTest {
         long fiveMinutesAgo = now - (5 * 60 * 1000);
 
         // Old signal — windowEnd is 11 minutes ago
-        handler.addSignal(new TrendingSignal("Old_Article", 20, List.of(), elevenMinutesAgo - 300000, elevenMinutesAgo));
+        handler.addSignal(new TrendingSignal("Old_Article", 20, List.of(), 0, elevenMinutesAgo - 300000, elevenMinutesAgo));
         // Recent signal — windowEnd is 5 minutes ago
-        handler.addSignal(new TrendingSignal("Recent_Article", 8, List.of(), fiveMinutesAgo - 300000, fiveMinutesAgo));
+        handler.addSignal(new TrendingSignal("Recent_Article", 8, List.of(), 0, fiveMinutesAgo - 300000, fiveMinutesAgo));
 
         List<Signal> signals = handler.recentSignals();
         assertEquals(1, signals.size());
@@ -107,7 +107,7 @@ class SignalHandlerTest {
         long now = System.currentTimeMillis();
         long tenMinutesAgo = now - (10 * 60 * 1000);
 
-        handler.addSignal(new TrendingSignal("Boundary_Article", 5, List.of(), tenMinutesAgo - 300000, tenMinutesAgo));
+        handler.addSignal(new TrendingSignal("Boundary_Article", 5, List.of(), 0, tenMinutesAgo - 300000, tenMinutesAgo));
 
         List<Signal> signals = handler.recentSignals();
         assertEquals(1, signals.size());
@@ -127,7 +127,7 @@ class SignalHandlerTest {
                 try {
                     for (int i = 0; i < signalsPerThread; i++) {
                         handler.addSignal(new TrendingSignal(
-                                "T" + threadId + "-" + i, i + 1, List.of(), now - 300000, now));
+                                "T" + threadId + "-" + i, i + 1, List.of(), 0, now - 300000, now));
                     }
                 } finally {
                     latch.countDown();
@@ -151,7 +151,7 @@ class SignalHandlerTest {
     @Test
     void handle_getRootPath_returnsHtml() throws IOException {
         long now = System.currentTimeMillis();
-        handler.addSignal(new TrendingSignal("TestArticle", 7, List.of(), now - 300000, now));
+        handler.addSignal(new TrendingSignal("TestArticle", 7, List.of(), 0, now - 300000, now));
 
         HttpExchange exchange = mockExchange("GET", "/");
         ByteArrayOutputStream responseBody = new ByteArrayOutputStream();
@@ -168,7 +168,7 @@ class SignalHandlerTest {
     @Test
     void handle_getApiSignals_returnsJson() throws IOException {
         long now = System.currentTimeMillis();
-        handler.addSignal(new TrendingSignal("TestArticle", 7, List.of(), now - 300000, now));
+        handler.addSignal(new TrendingSignal("TestArticle", 7, List.of(), 0, now - 300000, now));
 
         HttpExchange exchange = mockExchange("GET", "/api/signals");
         ByteArrayOutputStream responseBody = new ByteArrayOutputStream();

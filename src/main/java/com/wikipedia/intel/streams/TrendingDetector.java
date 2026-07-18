@@ -49,7 +49,7 @@ public class TrendingDetector {
                 .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMinutes(windowMinutes)))
                 .aggregate(
                         EditAggregate::empty,
-                        (key, event, agg) -> agg.add(event.comment()),
+                        (key, event, agg) -> agg.add(event.comment(), event.length()),
                         Materialized.with(Serdes.String(), aggregateSerde)
                 )
                 .toStream()
@@ -59,26 +59,27 @@ public class TrendingDetector {
                     long windowStart = windowedKey.window().start();
                     long windowEnd = windowedKey.window().end();
                     Signal signal = new TrendingSignal(title, agg.count(), agg.comments(),
-                            windowStart, windowEnd);
+                            agg.totalBytesChanged(), windowStart, windowEnd);
                     return KeyValue.pair(title, signal);
                 });
     }
 
     /**
-     * Aggregate state: edit count + recent comments (capped at MAX_COMMENTS).
+     * Aggregate state: edit count + recent comments + total bytes changed.
      */
-    public record EditAggregate(int count, List<String> comments) {
+    public record EditAggregate(int count, List<String> comments, int totalBytesChanged) {
 
         static EditAggregate empty() {
-            return new EditAggregate(0, List.of());
+            return new EditAggregate(0, List.of(), 0);
         }
 
-        EditAggregate add(String comment) {
+        EditAggregate add(String comment, WikipediaEvent.Length length) {
             List<String> newComments = new ArrayList<>(comments);
             if (comment != null && !comment.isBlank() && newComments.size() < MAX_COMMENTS) {
                 newComments.add(comment);
             }
-            return new EditAggregate(count + 1, newComments);
+            int byteDelta = (length != null) ? (length.current() - length.old()) : 0;
+            return new EditAggregate(count + 1, newComments, totalBytesChanged + byteDelta);
         }
     }
 

@@ -23,7 +23,7 @@ class SignalTest {
 
     @Test
     void trendingSignal_serialization_includesSignalTypeDiscriminator() throws JsonProcessingException {
-        TrendingSignal signal = new TrendingSignal("Java_(programming_language)", 12, List.of(), 1700000000L, 1700000300L);
+        TrendingSignal signal = new TrendingSignal("Java_(programming_language)", 12, List.of(), 0, 1700000000L, 1700000300L);
 
         String json = mapper.writeValueAsString(signal);
 
@@ -89,7 +89,7 @@ class SignalTest {
 
     @Test
     void trendingSignal_roundTrip_serializeDeserializeProducesEqualObject() throws JsonProcessingException {
-        TrendingSignal original = new TrendingSignal("Main_Page", 25, List.of(), 1700005000L, 1700005300L);
+        TrendingSignal original = new TrendingSignal("Main_Page", 25, List.of(), 0, 1700005000L, 1700005300L);
 
         String json = mapper.writeValueAsString(original);
         Signal deserialized = mapper.readValue(json, Signal.class);
@@ -111,7 +111,7 @@ class SignalTest {
 
     @Test
     void trendingSignal_signalType_returnsTrending() {
-        TrendingSignal signal = new TrendingSignal("Test_Article", 5, List.of(), 1000L, 2000L);
+        TrendingSignal signal = new TrendingSignal("Test_Article", 5, List.of(), 0, 1000L, 2000L);
         assertEquals("TRENDING", signal.signalType());
     }
 

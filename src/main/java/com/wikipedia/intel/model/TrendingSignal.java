@@ -13,23 +13,26 @@ public record TrendingSignal(
     String title,
     int editCount,
     List<String> recentComments,
+    int totalBytesChanged,
     long windowStart,
     long windowEnd
 ) implements Signal {
 
     /**
-     * Constructor without comments for backward compatibility.
+     * Constructor with all fields.
      */
     @JsonCreator
     public TrendingSignal(
             @JsonProperty("title") String title,
             @JsonProperty("editCount") int editCount,
             @JsonProperty("recentComments") List<String> recentComments,
+            @JsonProperty("totalBytesChanged") int totalBytesChanged,
             @JsonProperty("windowStart") long windowStart,
             @JsonProperty("windowEnd") long windowEnd) {
         this.title = title;
         this.editCount = editCount;
         this.recentComments = recentComments != null ? recentComments : List.of();
+        this.totalBytesChanged = totalBytesChanged;
         this.windowStart = windowStart;
         this.windowEnd = windowEnd;
     }

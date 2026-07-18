@@ -34,7 +34,7 @@ class SignalFormatterTest {
     void formatHtmlRow_trendingSignal_displaysTimestampInIST() {
         // 2023-11-14 22:13:20 UTC = 2023-11-15 03:43:20 IST (UTC+5:30)
         long windowStart = 1700000000000L;
-        TrendingSignal signal = new TrendingSignal("Test_Article", 5, List.of(), windowStart, windowStart + 300000);
+        TrendingSignal signal = new TrendingSignal("Test_Article", 5, List.of(), 0, windowStart, windowStart + 300000);
 
         String row = formatter.formatHtmlRow(signal);
 
@@ -45,7 +45,7 @@ class SignalFormatterTest {
 
     @Test
     void formatHtmlRow_trendingSignal_includesSignalType() {
-        TrendingSignal signal = new TrendingSignal("Java_(programming_language)", 12, List.of(), 1700000000000L, 1700000300000L);
+        TrendingSignal signal = new TrendingSignal("Java_(programming_language)", 12, List.of(), 0, 1700000000000L, 1700000300000L);
 
         String row = formatter.formatHtmlRow(signal);
 
@@ -54,7 +54,7 @@ class SignalFormatterTest {
 
     @Test
     void formatHtmlRow_trendingSignal_includesTitle() {
-        TrendingSignal signal = new TrendingSignal("Java_(programming_language)", 12, List.of(), 1700000000000L, 1700000300000L);
+        TrendingSignal signal = new TrendingSignal("Java_(programming_language)", 12, List.of(), 0, 1700000000000L, 1700000300000L);
 
         String row = formatter.formatHtmlRow(signal);
 
@@ -63,7 +63,7 @@ class SignalFormatterTest {
 
     @Test
     void formatHtmlRow_trendingSignal_includesEditCount() {
-        TrendingSignal signal = new TrendingSignal("Java_(programming_language)", 12, List.of(), 1700000000000L, 1700000300000L);
+        TrendingSignal signal = new TrendingSignal("Java_(programming_language)", 12, List.of(), 0, 1700000000000L, 1700000300000L);
 
         String row = formatter.formatHtmlRow(signal);
 
@@ -73,7 +73,7 @@ class SignalFormatterTest {
 
     @Test
     void formatHtmlRow_trendingSignal_includesTimeWindow() {
-        TrendingSignal signal = new TrendingSignal("Java_(programming_language)", 12, List.of(), 1700000000000L, 1700000300000L);
+        TrendingSignal signal = new TrendingSignal("Java_(programming_language)", 12, List.of(), 0, 1700000000000L, 1700000300000L);
 
         String row = formatter.formatHtmlRow(signal);
 
@@ -85,7 +85,7 @@ class SignalFormatterTest {
 
     @Test
     void formatHtmlRow_trendingSignal_isValidTableRow() {
-        TrendingSignal signal = new TrendingSignal("Test_Article", 5, List.of(), 1700000000000L, 1700000300000L);
+        TrendingSignal signal = new TrendingSignal("Test_Article", 5, List.of(), 0, 1700000000000L, 1700000300000L);
 
         String row = formatter.formatHtmlRow(signal);
 
@@ -147,7 +147,7 @@ class SignalFormatterTest {
     @Test
     void renderDashboardPage_producesValidHtml() {
         List<Signal> signals = List.of(
-                new TrendingSignal("Test_Article", 7, List.of(), 1700000000000L, 1700000300000L)
+                new TrendingSignal("Test_Article", 7, List.of(), 0, 1700000000000L, 1700000300000L)
         );
 
         String page = formatter.renderDashboardPage(signals);
@@ -160,7 +160,7 @@ class SignalFormatterTest {
     @Test
     void renderDashboardPage_containsTable() {
         List<Signal> signals = List.of(
-                new TrendingSignal("Test_Article", 7, List.of(), 1700000000000L, 1700000300000L)
+                new TrendingSignal("Test_Article", 7, List.of(), 0, 1700000000000L, 1700000300000L)
         );
 
         String page = formatter.renderDashboardPage(signals);
@@ -172,7 +172,7 @@ class SignalFormatterTest {
     @Test
     void renderDashboardPage_containsAutoRefreshScript() {
         List<Signal> signals = List.of(
-                new TrendingSignal("Test_Article", 7, List.of(), 1700000000000L, 1700000300000L)
+                new TrendingSignal("Test_Article", 7, List.of(), 0, 1700000000000L, 1700000300000L)
         );
 
         String page = formatter.renderDashboardPage(signals);
@@ -186,7 +186,7 @@ class SignalFormatterTest {
     @Test
     void renderDashboardPage_containsSignalRows() {
         List<Signal> signals = List.of(
-                new TrendingSignal("Article_A", 5, List.of(), 1700000000000L, 1700000300000L),
+                new TrendingSignal("Article_A", 5, List.of(), 0, 1700000000000L, 1700000300000L),
                 new BotAnomalySignal(8, 10, 0.8, 1700000000000L, 1700000300000L)
         );
 
@@ -212,7 +212,7 @@ class SignalFormatterTest {
     @Test
     void formatJson_producesValidJsonArray() throws Exception {
         List<Signal> signals = List.of(
-                new TrendingSignal("Java_Article", 10, List.of(), 1700000000000L, 1700000300000L)
+                new TrendingSignal("Java_Article", 10, List.of(), 0, 1700000000000L, 1700000300000L)
         );
 
         String json = formatter.formatJson(signals);
@@ -225,7 +225,7 @@ class SignalFormatterTest {
     @Test
     void formatJson_includesAllTrendingSignalFields() throws Exception {
         List<Signal> signals = List.of(
-                new TrendingSignal("Kotlin_Article", 8, List.of(), 1700000000000L, 1700000300000L)
+                new TrendingSignal("Kotlin_Article", 8, List.of(), 0, 1700000000000L, 1700000300000L)
         );
 
         String json = formatter.formatJson(signals);
@@ -259,9 +259,9 @@ class SignalFormatterTest {
     @Test
     void formatJson_multipleSignals_producesArrayWithCorrectCount() throws Exception {
         List<Signal> signals = List.of(
-                new TrendingSignal("Article_1", 5, List.of(), 1700000000000L, 1700000300000L),
+                new TrendingSignal("Article_1", 5, List.of(), 0, 1700000000000L, 1700000300000L),
                 new BotAnomalySignal(9, 10, 0.9, 1700000000000L, 1700000300000L),
-                new TrendingSignal("Article_2", 15, List.of(), 1700000300000L, 1700000600000L)
+                new TrendingSignal("Article_2", 15, List.of(), 0, 1700000300000L, 1700000600000L)
         );
 
         String json = formatter.formatJson(signals);

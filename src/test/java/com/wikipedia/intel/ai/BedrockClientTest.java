@@ -22,21 +22,21 @@ class BedrockClientTest {
     @Test
     void buildPrompt_includesAllSignalTitlesAndEditCounts() {
         List<TrendingSignal> signals = List.of(
-                new TrendingSignal("Infosys", 9, List.of(), 1000L, 2000L),
-                new TrendingSignal("Angela Rayner", 6, List.of(), 1000L, 2000L)
+                new TrendingSignal("Infosys", 9, List.of(), 0, 1000L, 2000L),
+                new TrendingSignal("Angela Rayner", 6, List.of(), 0, 1000L, 2000L)
         );
 
         String prompt = bedrockClient.buildPrompt(signals);
 
-        assertTrue(prompt.contains("\"Infosys\" (9 edits in 5 minutes)"));
-        assertTrue(prompt.contains("\"Angela Rayner\" (6 edits in 5 minutes)"));
+        assertTrue(prompt.contains("\"Infosys\" (9 edits in 5 minutes, net +0 bytes)"));
+        assertTrue(prompt.contains("\"Angela Rayner\" (6 edits in 5 minutes, net +0 bytes)"));
         assertTrue(prompt.contains("event_type"));
         assertTrue(prompt.contains("JSON array"));
     }
 
     @Test
     void buildPrompt_includesAllEventTypes() {
-        List<TrendingSignal> signals = List.of(new TrendingSignal("Test", 5, List.of(), 1000L, 2000L));
+        List<TrendingSignal> signals = List.of(new TrendingSignal("Test", 5, List.of(), 0, 1000L, 2000L));
         String prompt = bedrockClient.buildPrompt(signals);
 
         assertTrue(prompt.contains("politics"));
@@ -50,7 +50,7 @@ class BedrockClientTest {
         List<TrendingSignal> signals = List.of(
                 new TrendingSignal("Zail Singh", 7,
                         List.of("/* Early life */ added citation", "Cleanup"),
-                        1000L, 2000L)
+                        0, 1000L, 2000L)
         );
 
         String prompt = bedrockClient.buildPrompt(signals);
@@ -64,8 +64,8 @@ class BedrockClientTest {
     @Test
     void parseResponse_validJsonArray_returnsEnrichedSignals() {
         List<TrendingSignal> signals = List.of(
-                new TrendingSignal("Infosys", 9, List.of(), 1000L, 2000L),
-                new TrendingSignal("Angela Rayner", 6, List.of(), 3000L, 4000L)
+                new TrendingSignal("Infosys", 9, List.of(), 0, 1000L, 2000L),
+                new TrendingSignal("Angela Rayner", 6, List.of(), 0, 3000L, 4000L)
         );
 
         String response = """
@@ -95,7 +95,7 @@ class BedrockClientTest {
     @Test
     void parseResponse_withMarkdownCodeFences_stripsThemAndParses() {
         List<TrendingSignal> signals = List.of(
-                new TrendingSignal("Test_Article", 5, List.of(), 1000L, 2000L)
+                new TrendingSignal("Test_Article", 5, List.of(), 0, 1000L, 2000L)
         );
 
         String response = """
@@ -113,7 +113,7 @@ class BedrockClientTest {
     @Test
     void parseResponse_invalidJson_returnsEmptyList() {
         List<TrendingSignal> signals = List.of(
-                new TrendingSignal("Test", 5, List.of(), 1000L, 2000L)
+                new TrendingSignal("Test", 5, List.of(), 0, 1000L, 2000L)
         );
 
         List<EnrichedSignal> enriched = bedrockClient.parseResponse("not json at all", signals);
@@ -124,9 +124,9 @@ class BedrockClientTest {
     @Test
     void parseResponse_fewerItemsThanSignals_returnsPartialResults() {
         List<TrendingSignal> signals = List.of(
-                new TrendingSignal("A", 5, List.of(), 1000L, 2000L),
-                new TrendingSignal("B", 7, List.of(), 1000L, 2000L),
-                new TrendingSignal("C", 3, List.of(), 1000L, 2000L)
+                new TrendingSignal("A", 5, List.of(), 0, 1000L, 2000L),
+                new TrendingSignal("B", 7, List.of(), 0, 1000L, 2000L),
+                new TrendingSignal("C", 3, List.of(), 0, 1000L, 2000L)
         );
 
         String response = """
@@ -144,7 +144,7 @@ class BedrockClientTest {
     @Test
     void parseResponse_missingFields_usesDefaults() {
         List<TrendingSignal> signals = List.of(
-                new TrendingSignal("Test", 5, List.of(), 1000L, 2000L)
+                new TrendingSignal("Test", 5, List.of(), 0, 1000L, 2000L)
         );
 
         String response = """

@@ -60,7 +60,8 @@ public class BedrockClient {
         sb.append("- Base your classification ONLY on the title and edit comments provided.\n");
         sb.append("- If the edit comments suggest routine maintenance (fixing links, adding categories, cleanup), classify as 'maintenance' with LOW attention.\n");
         sb.append("- If you cannot determine why an article is trending from the available information, use event_type 'other', set confidence below 0.4, and say 'Reason unclear from available edit context' in summary.\n");
-        sb.append("- Do NOT speculate about deaths, disasters, or breaking news unless the edit comments clearly indicate it.\n\n");
+        sb.append("- Do NOT speculate about deaths, disasters, or breaking news unless the edit comments clearly indicate it.\n");
+        sb.append("- Large byte additions (+1000) suggest substantial content being added. Small or net-zero changes suggest minor edits or reverts.\n\n");
         sb.append("For each article, provide a JSON object with:\n");
         sb.append("- event_type: one of [politics, sports, corporate, death, disaster, controversy, entertainment, science, maintenance, other]\n");
         sb.append("- summary: one sentence explaining what the edits appear to be about\n");
@@ -71,7 +72,8 @@ public class BedrockClient {
 
         for (int i = 0; i < signals.size(); i++) {
             TrendingSignal s = signals.get(i);
-            sb.append(String.format("%d. \"%s\" (%d edits in 5 minutes)\n", i + 1, s.title(), s.editCount()));
+            sb.append(String.format("%d. \"%s\" (%d edits in 5 minutes, net %+d bytes)\n",
+                    i + 1, s.title(), s.editCount(), s.totalBytesChanged()));
             if (s.recentComments() != null && !s.recentComments().isEmpty()) {
                 sb.append("   Edit comments:\n");
                 for (String comment : s.recentComments()) {
