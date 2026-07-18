@@ -38,8 +38,9 @@ class SignalFormatterTest {
 
         String row = formatter.formatHtmlRow(signal);
 
-        assertTrue(row.contains("2023-11-15 03:43:20"),
-                "HTML row should display timestamp in IST (Asia/Kolkata), got: " + row);
+        // Same day — should show date once: "2023-11-15 03:43:20 - 03:48:20"
+        assertTrue(row.contains("2023-11-15 03:43:20 - 03:48:20"),
+                "HTML row should display compact time window with date once, got: " + row);
     }
 
     @Test

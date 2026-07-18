@@ -7,6 +7,7 @@ import com.wikipedia.intel.model.Signal;
 import com.wikipedia.intel.model.TrendingSignal;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -16,8 +17,13 @@ import java.util.List;
  */
 public class SignalFormatter {
 
+    private static final ZoneId IST = ZoneId.of("Asia/Kolkata");
+
     private static final DateTimeFormatter TIMESTAMP_FORMAT =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of("Asia/Kolkata"));
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(IST);
+
+    private static final DateTimeFormatter TIME_ONLY_FORMAT =
+            DateTimeFormatter.ofPattern("HH:mm:ss").withZone(IST);
 
     private final ObjectMapper mapper;
 
@@ -79,6 +85,16 @@ public class SignalFormatter {
                 + "        function formatIST(epochMs) {\n"
                 + "            return new Date(epochMs).toLocaleString('sv-SE', {timeZone: 'Asia/Kolkata'}).replace('T', ' ');\n"
                 + "        }\n"
+                + "        function formatTimeOnly(epochMs) {\n"
+                + "            return new Date(epochMs).toLocaleTimeString('en-GB', {timeZone: 'Asia/Kolkata', hour12: false});\n"
+                + "        }\n"
+                + "        function formatWindow(startMs, endMs) {\n"
+                + "            var s = new Date(startMs), e = new Date(endMs);\n"
+                + "            var sDate = s.toLocaleDateString('sv-SE', {timeZone: 'Asia/Kolkata'});\n"
+                + "            var eDate = e.toLocaleDateString('sv-SE', {timeZone: 'Asia/Kolkata'});\n"
+                + "            if (sDate === eDate) return formatIST(startMs) + ' - ' + formatTimeOnly(endMs);\n"
+                + "            return formatIST(startMs) + ' - ' + formatIST(endMs);\n"
+                + "        }\n"
                 + "        setInterval(function() {\n"
                 + "            fetch('/api/signals')\n"
                 + "                .then(function(response) { return response.json(); })\n"
@@ -95,7 +111,7 @@ public class SignalFormatter {
                 + "                        } else if (type === 'BOT_ANOMALY') {\n"
                 + "                            metrics = s.botEditCount + '/' + s.totalEditCount + ' (' + Math.round(s.ratio * 100) + '%)';\n"
                 + "                        }\n"
-                + "                        var window = formatIST(s.windowStart) + ' - ' + formatIST(s.windowEnd);\n"
+                + "                        var window = formatWindow(s.windowStart, s.windowEnd);\n"
                 + "                        row.innerHTML = '<td>' + type + '</td><td>' + title + '</td><td>' + metrics + '</td><td>' + window + '</td>';\n"
                 + "                        body.appendChild(row);\n"
                 + "                    });\n"
@@ -121,18 +137,33 @@ public class SignalFormatter {
     }
 
     private String formatTrendingRow(TrendingSignal signal) {
-        String windowStart = formatTimestamp(signal.windowStart());
-        String windowEnd = formatTimestamp(signal.windowEnd());
-        return "<tr><td>TRENDING</td><td>%s</td><td>%d edits</td><td>%s - %s</td></tr>".formatted(
-                signal.title(), signal.editCount(), windowStart, windowEnd);
+        String window = formatTimeWindow(signal.windowStart(), signal.windowEnd());
+        return "<tr><td>TRENDING</td><td>%s</td><td>%d edits</td><td>%s</td></tr>".formatted(
+                signal.title(), signal.editCount(), window);
     }
 
     private String formatBotAnomalyRow(BotAnomalySignal signal) {
-        String windowStart = formatTimestamp(signal.windowStart());
-        String windowEnd = formatTimestamp(signal.windowEnd());
+        String window = formatTimeWindow(signal.windowStart(), signal.windowEnd());
         int ratioPercent = (int) Math.round(signal.ratio() * 100);
-        return "<tr><td>BOT_ANOMALY</td><td>-</td><td>%d/%d (%d%%)</td><td>%s - %s</td></tr>".formatted(
-                signal.botEditCount(), signal.totalEditCount(), ratioPercent, windowStart, windowEnd);
+        return "<tr><td>BOT_ANOMALY</td><td>-</td><td>%d/%d (%d%%)</td><td>%s</td></tr>".formatted(
+                signal.botEditCount(), signal.totalEditCount(), ratioPercent, window);
+    }
+
+    /**
+     * Formats a time window. Shows date once if both timestamps are on the same day,
+     * otherwise shows full date-time for both.
+     */
+    String formatTimeWindow(long startMillis, long endMillis) {
+        Instant startInstant = Instant.ofEpochMilli(startMillis);
+        Instant endInstant = Instant.ofEpochMilli(endMillis);
+        LocalDate startDate = startInstant.atZone(IST).toLocalDate();
+        LocalDate endDate = endInstant.atZone(IST).toLocalDate();
+
+        String startFull = TIMESTAMP_FORMAT.format(startInstant);
+        if (startDate.equals(endDate)) {
+            return startFull + " - " + TIME_ONLY_FORMAT.format(endInstant);
+        }
+        return startFull + " - " + TIMESTAMP_FORMAT.format(endInstant);
     }
 
     private String formatTimestamp(long epochMillis) {
