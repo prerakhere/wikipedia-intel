@@ -105,6 +105,7 @@ public class SignalFormatter {
                 + "                        var row = document.createElement('tr');\n"
                 + "                        var type = s.signalType || '';\n"
                 + "                        var title = s.title || '-';\n"
+                + "                        var titleHtml = title !== '-' ? '<a href=\"https://en.wikipedia.org/wiki/' + encodeURIComponent(title.replace(/ /g, '_')) + '\" target=\"_blank\">' + title + '</a>' : '-';\n"
                 + "                        var metrics = '';\n"
                 + "                        if (type === 'TRENDING') {\n"
                 + "                            metrics = s.editCount + ' edits';\n"
@@ -112,7 +113,7 @@ public class SignalFormatter {
                 + "                            metrics = s.botEditCount + '/' + s.totalEditCount + ' (' + Math.round(s.ratio * 100) + '%)';\n"
                 + "                        }\n"
                 + "                        var window = formatWindow(s.windowStart, s.windowEnd);\n"
-                + "                        row.innerHTML = '<td>' + type + '</td><td>' + title + '</td><td>' + metrics + '</td><td>' + window + '</td>';\n"
+                + "                        row.innerHTML = '<td>' + type + '</td><td>' + titleHtml + '</td><td>' + metrics + '</td><td>' + window + '</td>';\n"
                 + "                        body.appendChild(row);\n"
                 + "                    });\n"
                 + "                });\n"
@@ -138,8 +139,9 @@ public class SignalFormatter {
 
     private String formatTrendingRow(TrendingSignal signal) {
         String window = formatTimeWindow(signal.windowStart(), signal.windowEnd());
-        return "<tr><td>TRENDING</td><td>%s</td><td>%d edits</td><td>%s</td></tr>".formatted(
-                signal.title(), signal.editCount(), window);
+        String wikiUrl = "https://en.wikipedia.org/wiki/" + signal.title().replace(' ', '_');
+        return "<tr><td>TRENDING</td><td><a href=\"%s\" target=\"_blank\">%s</a></td><td>%d edits</td><td>%s</td></tr>".formatted(
+                wikiUrl, signal.title(), signal.editCount(), window);
     }
 
     private String formatBotAnomalyRow(BotAnomalySignal signal) {
