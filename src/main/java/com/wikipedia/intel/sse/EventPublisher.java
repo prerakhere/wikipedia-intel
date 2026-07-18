@@ -39,6 +39,10 @@ public class EventPublisher {
             return false;
         }
 
+        if (!"enwiki".equals(event.wiki())) {
+            return false;
+        }
+
         String json;
         try {
             json = mapper.writeValueAsString(event);

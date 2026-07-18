@@ -7,7 +7,7 @@ import com.wikipedia.intel.model.Signal;
 import com.wikipedia.intel.model.TrendingSignal;
 
 import java.time.Instant;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
 public class SignalFormatter {
 
     private static final DateTimeFormatter TIMESTAMP_FORMAT =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneOffset.UTC);
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of("Asia/Kolkata"));
 
     private final ObjectMapper mapper;
 
@@ -76,6 +76,9 @@ public class SignalFormatter {
                 + "        </tbody>\n"
                 + "    </table>\n"
                 + "    <script>\n"
+                + "        function formatIST(epochMs) {\n"
+                + "            return new Date(epochMs).toLocaleString('sv-SE', {timeZone: 'Asia/Kolkata'}).replace('T', ' ');\n"
+                + "        }\n"
                 + "        setInterval(function() {\n"
                 + "            fetch('/api/signals')\n"
                 + "                .then(function(response) { return response.json(); })\n"
@@ -92,7 +95,7 @@ public class SignalFormatter {
                 + "                        } else if (type === 'BOT_ANOMALY') {\n"
                 + "                            metrics = s.botEditCount + '/' + s.totalEditCount + ' (' + Math.round(s.ratio * 100) + '%)';\n"
                 + "                        }\n"
-                + "                        var window = new Date(s.windowStart).toISOString() + ' - ' + new Date(s.windowEnd).toISOString();\n"
+                + "                        var window = formatIST(s.windowStart) + ' - ' + formatIST(s.windowEnd);\n"
                 + "                        row.innerHTML = '<td>' + type + '</td><td>' + title + '</td><td>' + metrics + '</td><td>' + window + '</td>';\n"
                 + "                        body.appendChild(row);\n"
                 + "                    });\n"

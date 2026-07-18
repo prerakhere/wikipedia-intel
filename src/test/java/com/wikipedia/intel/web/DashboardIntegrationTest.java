@@ -36,10 +36,11 @@ class DashboardIntegrationTest {
         SignalFormatter formatter = new SignalFormatter();
         handler = new SignalHandler(formatter);
 
-        // Add sample signals
-        handler.addSignal(new TrendingSignal("Java_(programming_language)", 12, 1700000000000L, 1700000300000L));
-        handler.addSignal(new BotAnomalySignal(18, 20, 0.9, 1700000000000L, 1700000300000L));
-        handler.addSignal(new TrendingSignal("Kafka_(software)", 7, 1700000300000L, 1700000600000L));
+        long now = System.currentTimeMillis();
+        // Add sample signals with recent timestamps
+        handler.addSignal(new TrendingSignal("Java_(programming_language)", 12, now - 300000, now));
+        handler.addSignal(new BotAnomalySignal(18, 20, 0.9, now - 300000, now));
+        handler.addSignal(new TrendingSignal("Kafka_(software)", 7, now - 300000, now));
 
         server = new DashboardServer(port, handler);
         server.start();
@@ -72,23 +73,23 @@ class DashboardIntegrationTest {
 
         assertEquals(3, signals.size());
 
-        // Newest first — last added is first returned
+        // Sorted by edit count descending — BotAnomaly(20) > Java(12) > Kafka(7)
         Signal first = signals.get(0);
-        assertInstanceOf(TrendingSignal.class, first);
-        TrendingSignal trending = (TrendingSignal) first;
-        assertEquals("Kafka_(software)", trending.title());
-        assertEquals(7, trending.editCount());
-
-        Signal second = signals.get(1);
-        assertInstanceOf(BotAnomalySignal.class, second);
-        BotAnomalySignal botAnomaly = (BotAnomalySignal) second;
+        assertInstanceOf(BotAnomalySignal.class, first);
+        BotAnomalySignal botAnomaly = (BotAnomalySignal) first;
         assertEquals(18, botAnomaly.botEditCount());
         assertEquals(20, botAnomaly.totalEditCount());
         assertEquals(0.9, botAnomaly.ratio(), 0.001);
 
+        Signal second = signals.get(1);
+        assertInstanceOf(TrendingSignal.class, second);
+        assertEquals("Java_(programming_language)", ((TrendingSignal) second).title());
+        assertEquals(12, ((TrendingSignal) second).editCount());
+
         Signal third = signals.get(2);
         assertInstanceOf(TrendingSignal.class, third);
-        assertEquals("Java_(programming_language)", ((TrendingSignal) third).title());
+        assertEquals("Kafka_(software)", ((TrendingSignal) third).title());
+        assertEquals(7, ((TrendingSignal) third).editCount());
     }
 
     @Test
@@ -122,7 +123,8 @@ class DashboardIntegrationTest {
     @Test
     void getApiSignals_afterAddingMoreSignals_reflectsUpdates() throws Exception {
         // Add another signal after server is running
-        handler.addSignal(new TrendingSignal("New_Article", 15, 1700000600000L, 1700000900000L));
+        long now = System.currentTimeMillis();
+        handler.addSignal(new TrendingSignal("New_Article", 15, now - 300000, now));
 
         HttpResponse<String> response = client.send(
                 HttpRequest.newBuilder()
@@ -137,9 +139,11 @@ class DashboardIntegrationTest {
         List<Signal> signals = mapper.readValue(response.body(), new TypeReference<>() {});
 
         assertEquals(4, signals.size());
-        // Newest signal first
-        assertInstanceOf(TrendingSignal.class, signals.get(0));
-        assertEquals("New_Article", ((TrendingSignal) signals.get(0)).title());
+        // Sorted by edit count: BotAnomaly(20) > New_Article(15) > Java(12) > Kafka(7)
+        assertInstanceOf(BotAnomalySignal.class, signals.get(0));
+        assertInstanceOf(TrendingSignal.class, signals.get(1));
+        assertEquals("New_Article", ((TrendingSignal) signals.get(1)).title());
+        assertEquals(15, ((TrendingSignal) signals.get(1)).editCount());
     }
 
     private int findAvailablePort() {

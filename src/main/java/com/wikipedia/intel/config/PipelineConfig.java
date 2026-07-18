@@ -27,11 +27,6 @@ public record PipelineConfig(
     double botRatioThreshold,
     int botMinimumVolume,
 
-    // DynamoDB
-    String dynamoTableName,
-    String dynamoRegion,
-    int dynamoMaxRetries,
-
     // Web Dashboard
     int dashboardPort
 ) {
@@ -52,11 +47,8 @@ public record PipelineConfig(
             Long.parseLong(resolve("pipeline.trending.window.minutes", "PIPELINE_TRENDING_WINDOW_MINUTES", "5")),
             Integer.parseInt(resolve("pipeline.trending.threshold", "PIPELINE_TRENDING_THRESHOLD", "5")),
             Long.parseLong(resolve("pipeline.bot.window.minutes", "PIPELINE_BOT_WINDOW_MINUTES", "5")),
-            Double.parseDouble(resolve("pipeline.bot.ratio.threshold", "PIPELINE_BOT_RATIO_THRESHOLD", "0.8")),
-            Integer.parseInt(resolve("pipeline.bot.minimum.volume", "PIPELINE_BOT_MINIMUM_VOLUME", "10")),
-            resolve("pipeline.dynamo.table.name", "PIPELINE_DYNAMO_TABLE_NAME", "wikipedia-signals"),
-            resolve("pipeline.dynamo.region", "PIPELINE_DYNAMO_REGION", "ap-south-1"),
-            Integer.parseInt(resolve("pipeline.dynamo.max.retries", "PIPELINE_DYNAMO_MAX_RETRIES", "3")),
+            Double.parseDouble(resolve("pipeline.bot.ratio.threshold", "PIPELINE_BOT_RATIO_THRESHOLD", "0.3")),
+            Integer.parseInt(resolve("pipeline.bot.minimum.volume", "PIPELINE_BOT_MINIMUM_VOLUME", "5")),
             Integer.parseInt(resolve("pipeline.dashboard.port", "PIPELINE_DASHBOARD_PORT", "8080"))
         );
     }

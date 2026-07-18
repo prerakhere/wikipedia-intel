@@ -2,7 +2,9 @@ package com.wikipedia.intel.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import com.wikipedia.intel.model.BotAnomalySignal;
 import com.wikipedia.intel.model.Signal;
+import com.wikipedia.intel.model.TrendingSignal;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,6 +26,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class SignalHandler implements HttpHandler {
 
     private static final int MAX_SIGNALS = 50;
+    private static final long ROLLING_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
 
     private final ConcurrentLinkedDeque<Signal> buffer = new ConcurrentLinkedDeque<>();
     private final SignalFormatter formatter;
@@ -46,11 +49,27 @@ public class SignalHandler implements HttpHandler {
     }
 
     /**
-     * Returns the most recent signals (up to MAX_SIGNALS), newest first.
+     * Returns the most recent signals (up to MAX_SIGNALS), sorted by edit count descending.
+     * Only includes signals from the last 10 minutes (based on windowEnd).
      * Returns a snapshot — safe to iterate without external synchronization.
      */
     public List<Signal> recentSignals() {
-        return new ArrayList<>(buffer);
+        long cutoff = System.currentTimeMillis() - ROLLING_WINDOW_MS;
+        List<Signal> signals = new ArrayList<>(buffer);
+        signals.removeIf(s -> s.windowEnd() < cutoff);
+        signals.sort((a, b) -> Integer.compare(sortValue(b), sortValue(a)));
+        return signals;
+    }
+
+    /**
+     * Extracts a sortable value from a signal — edit count for trending,
+     * total edit count for bot anomaly.
+     */
+    private int sortValue(Signal signal) {
+        return switch (signal) {
+            case TrendingSignal t -> t.editCount();
+            case BotAnomalySignal b -> b.totalEditCount();
+        };
     }
 
     @Override

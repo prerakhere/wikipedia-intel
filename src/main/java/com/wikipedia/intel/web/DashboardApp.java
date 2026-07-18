@@ -3,8 +3,6 @@ package com.wikipedia.intel.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wikipedia.intel.config.PipelineConfig;
 import com.wikipedia.intel.model.Signal;
-import com.wikipedia.intel.persist.DynamoKeyStrategy;
-import com.wikipedia.intel.persist.DynamoSignalWriter;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -12,8 +10,6 @@ import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -21,8 +17,8 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Phase 3 entry point — consumes signals from Kafka, persists them to DynamoDB,
- * and serves them on a lightweight HTTP dashboard.
+ * Phase 3 entry point — consumes signals from Kafka and serves them
+ * on a lightweight HTTP dashboard.
  *
  * <p>Runs as a standalone JVM process via {@code ./gradlew runPhase3}.
  */
@@ -33,13 +29,6 @@ public class DashboardApp {
     public static void main(String[] args) {
         PipelineConfig config = PipelineConfig.load();
         ObjectMapper mapper = new ObjectMapper();
-
-        // DynamoDB client
-        DynamoDbClient dynamoClient = DynamoDbClient.builder()
-                .region(Region.of(config.dynamoRegion()))
-                .build();
-        DynamoKeyStrategy keyStrategy = new DynamoKeyStrategy();
-        DynamoSignalWriter writer = new DynamoSignalWriter(dynamoClient, keyStrategy, config.dynamoTableName());
 
         // Web dashboard
         SignalFormatter formatter = new SignalFormatter();
@@ -81,7 +70,6 @@ public class DashboardApp {
                     try {
                         Signal signal = mapper.readValue(record.value(), Signal.class);
                         handler.addSignal(signal);
-                        writer.write(signal);
                     } catch (Exception e) {
                         log.warn("Failed to process signal record: {}", e.getMessage());
                     }

@@ -5,6 +5,7 @@ bin/
 *.iml
 .DS_Store
 LEARNING.md
+learnings/
 CONTEXT.md
 ENTRYPOINT.md
 .jqwik-database

@@ -31,8 +31,9 @@ class DashboardServerTest {
     @Test
     void server_bindsToConfiguredPort_andAcceptsRequests() throws Exception {
         int port = findAvailablePort();
+        long now = System.currentTimeMillis();
         SignalHandler handler = new SignalHandler(new SignalFormatter());
-        handler.addSignal(new TrendingSignal("TestArticle", 5, 1000L, 2000L));
+        handler.addSignal(new TrendingSignal("TestArticle", 5, now - 300000, now));
 
         server = new DashboardServer(port, handler);
         server.start();

@@ -19,11 +19,8 @@ class PipelineConfigTest {
         assertEquals(5L, config.trendingWindowMinutes());
         assertEquals(5, config.trendingThreshold());
         assertEquals(5L, config.botWindowMinutes());
-        assertEquals(0.8, config.botRatioThreshold(), 0.001);
-        assertEquals(10, config.botMinimumVolume());
-        assertEquals("wikipedia-signals", config.dynamoTableName());
-        assertEquals("ap-south-1", config.dynamoRegion());
-        assertEquals(3, config.dynamoMaxRetries());
+        assertEquals(0.3, config.botRatioThreshold(), 0.001);
+        assertEquals(5, config.botMinimumVolume());
         assertEquals(8080, config.dashboardPort());
     }
 

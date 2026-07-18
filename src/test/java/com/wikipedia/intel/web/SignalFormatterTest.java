@@ -31,6 +31,18 @@ class SignalFormatterTest {
     // --- formatHtmlRow(TrendingSignal) ---
 
     @Test
+    void formatHtmlRow_trendingSignal_displaysTimestampInIST() {
+        // 2023-11-14 22:13:20 UTC = 2023-11-15 03:43:20 IST (UTC+5:30)
+        long windowStart = 1700000000000L;
+        TrendingSignal signal = new TrendingSignal("Test_Article", 5, windowStart, windowStart + 300000);
+
+        String row = formatter.formatHtmlRow(signal);
+
+        assertTrue(row.contains("2023-11-15 03:43:20"),
+                "HTML row should display timestamp in IST (Asia/Kolkata), got: " + row);
+    }
+
+    @Test
     void formatHtmlRow_trendingSignal_includesSignalType() {
         TrendingSignal signal = new TrendingSignal("Java_(programming_language)", 12, 1700000000000L, 1700000300000L);
 

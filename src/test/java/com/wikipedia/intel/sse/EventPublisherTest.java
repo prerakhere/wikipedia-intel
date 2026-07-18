@@ -120,13 +120,53 @@ class EventPublisherTest {
                 "failedSendCount should remain zero on successful sends");
     }
 
+    @Test
+    void publishWithNonEnwikiReturnsFalseAndDoesNotSend() {
+        WikipediaEvent event = createEvent("Q140546265", 0, "wikidatawiki");
+
+        boolean result = publisher.publish(event);
+
+        assertFalse(result, "publish() should return false for non-enwiki events");
+        verify(producer, never()).send(any(ProducerRecord.class), any(Callback.class));
+    }
+
+    @Test
+    void publishWithEnwikiAndNamespaceZeroReturnsTrueAndSends() {
+        WikipediaEvent event = createEvent("Infosys", 0, "enwiki");
+
+        when(producer.send(any(ProducerRecord.class), any(Callback.class)))
+                .thenReturn(mock(Future.class));
+
+        boolean result = publisher.publish(event);
+
+        assertTrue(result, "publish() should return true for enwiki namespace=0 events");
+        verify(producer).send(any(ProducerRecord.class), any(Callback.class));
+    }
+
+    @Test
+    void publishWithOtherLanguageWikiReturnsFalse() {
+        WikipediaEvent event = createEvent("テクノロジー", 0, "jawiki");
+
+        boolean result = publisher.publish(event);
+
+        assertFalse(result, "publish() should return false for non-enwiki language editions");
+        verify(producer, never()).send(any(ProducerRecord.class), any(Callback.class));
+    }
+
     /**
-     * Helper to create a WikipediaEvent with the given title and namespace.
+     * Helper to create a WikipediaEvent with the given title and namespace (enwiki default).
      */
     private WikipediaEvent createEvent(String title, int namespace) {
+        return createEvent(title, namespace, "enwiki");
+    }
+
+    /**
+     * Helper to create a WikipediaEvent with the given title, namespace, and wiki.
+     */
+    private WikipediaEvent createEvent(String title, int namespace, String wiki) {
         return new WikipediaEvent(
                 title,
-                "enwiki",
+                wiki,
                 "TestUser",
                 false,
                 System.currentTimeMillis() / 1000,
